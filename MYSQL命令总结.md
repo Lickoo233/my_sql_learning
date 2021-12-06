@@ -104,7 +104,7 @@
 >     -> salary FLOAT
 >     -> );
 >
-> CREATE TABLE （<字段名> <数据类型> , ... [CONSTRAINT <约束名>] PRIMARY KEY [字段名1,字段名2,...]）（如果不是联合主键的话就只有一个字段名）
+> CREATE TABLE （<字段名> <数据类型> , ... [CONSTRAINT <约束名>] PRIMARY KEY [字段名1,字段名2,...]）;（如果不是联合主键的话就只有一个字段名）
 >
 > 例：mysql> CREATE TABLE tb_emp4
 >     -> (
@@ -122,3 +122,152 @@
 - 删除主键
 
 > ALTER TABLE <数据表名> DROP PRIMARY KEY;
+
+- 创建表时设置主键自增长
+
+> CREATE TABLE （<字段名> <数据类型> AUTO_INCREASEMENT , ...);
+>
+> 例：mysql> CREATE TABLE tb_student(
+>     -> id INT(4) PRIMARY KEY AUTO_INCREMENT,
+>     -> name VARCHAR(25) NOT NULL
+>     -> );
+
+- 给已存在的主键设置自增
+
+> ALTER TABLE <表名> MODIFY <字段名> <字段类型> AUTO_INCREMENT;
+
+- 创建表时给主键的自增设置初始值
+
+> 例：
+>
+> mysql> CREATE TABLE tb_student2 (
+>     -> id INT NOT NULL AUTO_INCREMENT,
+>     -> name VARCHAR(20) NOT NULL,
+>     -> PRIMARY KEY(ID)
+>     -> )AUTO_INCREMENT=100;
+
+- 给已有的自增值设置初始值
+
+> ALTER TABLE <表名> AUTO_INCREMENT=值;
+
+**Q：自增字段值不连续：http://c.biancheng.net/view/7624.html**
+
+- 在创建表时设置外键约束
+
+> CREATE TABLE （<字段名> <数据类型>, ... [CONSTRAINT <外键名>] FOREIGN KEY 字段名 [，字段名2，…]
+> REFERENCES <主表名> 主键列1 [，主键列2，…]);
+>
+> 例：mysql> CREATE TABLE tb_dept1
+>     -> (
+>     -> id INT(11) PRIMARY KEY,
+>     -> name VARCHAR(22) NOT NULL,
+>     -> location VARCHAR(50)
+>     -> );
+> Query OK, 0 rows affected (0.37 sec)
+>
+> mysql> CREATE TABLE tb_emp6
+>     -> (
+>     -> id INT(11) PRIMARY KEY,
+>     -> name VARCHAR(25),
+>     -> deptId INT(11),
+>     -> salary FLOAT,
+>     -> CONSTRAINT fk_emp_dept1
+>     -> FOREIGN KEY(deptId) REFERENCES tb_dept1(id)
+>     -> );
+> Query OK, 0 rows affected (0.37 sec)
+
+- 在修改表时设置外键约束
+
+> ALTER TABLE <数据表名> ADD CONSTRAINT <外键名>
+> FOREIGN KEY(<列名>) REFERENCES <主表名> (<列名>);
+
+- 删除外键约束
+
+> ALTER TABLE <表名> DROP FOREIGN KEY <外键约束名>;
+
+- 在创建表时设置唯一约束
+
+> CREATE TABLE （<字段名> <数据类型> UNIQUE , ...);
+>
+> 例：mysql> CREATE TABLE tb_dept2
+>     -> (
+>     -> id INT(11) PRIMARY KEY,
+>     -> name VARCHAR(22) UNIQUE,
+>     -> location VARCHAR(50)
+>     -> );
+
+- 在修改表时设置唯一约束
+
+> ALTER TABLE <数据表名> ADD CONSTRAINT <唯一约束名> UNIQUE(<列名>);
+
+- 删除唯一约束
+
+> ALTER TABLE <表名> DROP INDEX <唯一约束名>;
+
+- 创建表时设置检查约束
+
+> CREATE TABLE （<字段名> <数据类型> , ... CHECK(<条件>) );
+>
+> 例：mysql> CREATE TABLE tb_emp7
+>     -> (
+>     -> id INT(11) PRIMARY KEY,
+>     -> name VARCHAR(25),
+>     -> deptId INT(11),
+>     -> salary FLOAT,
+>     -> CHECK(salary>0 AND salary<100),
+>     -> FOREIGN KEY(deptId) REFERENCES tb_dept1(id)
+>     -> );
+
+- 修改表时添加检查约束
+
+> ALTER TABLE tb_emp7 ADD CONSTRAINT <检查约束名> CHECK(<检查约束>)
+>
+> 例：mysql> ALTER TABLE tb_emp7
+>     -> ADD CONSTRAINT check_id
+>     -> CHECK(id>0);
+
+- 删除检查约束名
+
+> ALTER TABLE <数据表名> DROP CONSTRAINT <检查约束名>;
+
+- 在创建表时设置默认约束
+
+> CREATE TABLE （<字段名> <数据类型> DEFAULT <默认值> , ...);
+>
+> 例：mysql> CREATE TABLE tb_dept3
+>     -> (
+>     -> id INT(11) PRIMARY KEY,
+>     -> name VARCHAR(22),
+>     -> location VARCHAR(50) DEFAULT 'Beijing'
+>     -> );
+
+- 修改表时添加默认约束
+
+> ALTER TABLE <数据表名> CHANGE COLUMN <字段名> <数据类型> DEFAULT <默认值>;
+
+- 删除默认约束
+
+> ALTER TABLE <数据表名> CHANGE COLUMN <字段名> <字段名> <数据类型> DEFAULT NULL;
+
+- 在创建表时设置非空约束
+
+> CREATE TABLE （<字段名> <数据类型> NOT NULL , ...);
+>
+> 例：mysql> CREATE TABLE tb_dept4
+>     -> (
+>     -> id INT(11) PRIMARY KEY,
+>     -> name VARCHAR(22) NOT NULL,
+>     -> location VARCHAR(50)
+>     -> );
+
+- 在修改表时添加非空约束
+
+> ALTER TABLE <数据表名> CHANGE COLUMN <字段名> <字段名> <数据类型> NOT NULL;
+
+- 删除非空约束
+
+> ALTER TABLE <数据表名> CHANGE COLUMN <字段名> <字段名> <数据类型> NULL;
+
+- 查看表中的约束
+
+> SHOW CREATE TABLE <数据表名>;
