@@ -271,3 +271,42 @@
 - 查看表中的约束
 
 > SHOW CREATE TABLE <数据表名>;
+
+- 查询表操作
+
+> SELECT [DISTINCT]
+> {* | <字段列名>}
+> [
+> FROM <表 1>, <表 2>…
+> [WHERE <表达式>
+> [GROUP BY <group by definition>
+> [HAVING <expression> [{<operator> <expression>}…]]
+> [ORDER BY <order by definition>]
+> [LIMIT[<offset>,] <row count>]
+> ]
+>
+> 例：
+>
+> mysql> SELECT * FROM tb_students_info;
+>
+> SELECT id,name,dept_id,age,sex,height,login_date FROM tb_students_info;
+>
+> mysql> SELECT * FROM tb_students_info LIMIT 3,5;
+>
+> mysql> SELECT * FROM tb_students_info LIMIT 4;
+>
+> mysql> SELECT * FROM tb_students_info LIMIT 5 OFFSET 3;
+>
+> mysql> SELECT name,height FROM tb_students_info ORDER BY height,name;
+>
+> mysql> SELECT name,height FROM tb_student_info ORDER BY height DESC,name ASC;
+
+- 指定别名
+
+> <表名> [AS] <别名>
+>
+> <字段名> [AS] <别名>
+>
+> 例：
+>
+> mysql> SELECT name AS student_name, age AS student_age FROM tb_students_info;
