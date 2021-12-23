@@ -272,6 +272,8 @@
 
 > SHOW CREATE TABLE <数据表名>;
 
+---
+
 - 查询表操作
 
 > SELECT [DISTINCT]
@@ -310,3 +312,157 @@
 > 例：
 >
 > mysql> SELECT name AS student_name, age AS student_age FROM tb_students_info;
+
+- 限制查询结果数
+
+> LIMIT 记录数
+>
+> LIMIT 初始位置，记录数
+>
+> LIMIT 记录数 OFFSET 初始位置
+>
+> 例：
+>
+> mysql>SELECT * FROM tb_students_info LIMIT 5 OFFSET 3;
+
+- 对查询结果排序
+
+> ORDER BY <字段名1>[ASC|DESC]，<字段名2>[ASC|DESC]，...  （ASC为默认值）
+>
+> 例：
+>
+> mysql> SELECT name,height FROM tb_student_info ORDER BY height DESC,name ASC;
+
+- 条件查询
+
+> WHERE 查询条件
+>
+> 查询条件可以是：
+>
+> - 带比较运算符和逻辑运算符的查询条件
+> - 带 BETWEEN AND 关键字的查询条件
+> - 带 IS NULL 关键字的查询条件
+> - 带 IN 关键字的查询条件
+> - 带 LIKE 关键字的查询条件
+>
+> 例：
+>
+> mysql> SELECT name,age,height FROM tb_students_info 
+>     -> WHERE age>21 XOR height>=175;
+>
+> mysql> SELECT name FROM tb_students_info
+>     -> WHERE name NOT LIKE BINARY 'T%';
+>
+> mysql> SELECT name FROM tb_students_info
+>     -> WHERE name LIKE '____y';
+>
+> mysql> SELECT NAME FROM test.`tb_students_info` WHERE NAME LIKE '%\%';
+>
+> 
+>
+> mysql> SELECT name,age FROM tb_students_info 
+>     -> WHERE age NOT BETWEEN 20 AND 23;
+>
+> mysql> SELECT name,login_date FROM tb_students_info
+>     -> WHERE login_date BETWEEN '2015-10-01' AND '2016-05-01';
+>
+> 
+>
+> mysql> SELECT 'name','login_date' FROM tb_students_info 
+>     -> WHERE login_date IS NOT NULL;
+
+- 分组查询
+
+> GROUP BY <字段名>
+>
+> 聚合函数包括 COUNT()，SUM()，AVG()，MAX() 和 MIN()。
+>
+> 例：
+>
+> mysql> SELECT `sex`, <u>GROUP_CONCAT(name)</u> FROM tb_students_info 
+>     -> GROUP BY sex;
+>
+> mysql> SELECT sex,COUNT(sex) FROM tb_students_info 
+>     -> GROUP BY sex;
+>
+> mysql> SELECT sex,GROUP_CONCAT(name) FROM tb_students_info 
+>     ->GROUP BY sex WITH ROLLUP;
+>
+> WITH POLLUP 关键字用来在所有记录的最后加上一条记录，这条记录是上面所有记录的总和，即统计记录数量。
+
+- 过滤分组
+
+> [MySQL HAVING：过滤分组 (biancheng.net)](http://c.biancheng.net/view/7416.html)
+
+- 交叉链接
+
+> SELECT <字段名> FROM <表1> CROSS JOIN <表2> [WHERE子句]
+>
+> 或SELECT <字段名> FROM <表1>, <表2> [WHERE子句] 
+>
+> 例：
+>
+> mysql> SELECT * FROM tb_course CROSS JOIN tb_students_info 
+>     -> WHERE tb_students_info.course_id = tb_course.id;
+
+- 内连接
+
+> SELECT <字段名> FROM <表1> INNER JOIN <表2> [ON子句]
+>
+> 内连接中可以省略 INNER 关键字，只用关键字 JOIN。
+>
+> 例：
+>
+> mysql> SELECT s.name,c.course_name FROM tb_students_info s INNER JOIN tb_course c 
+>     -> ON s.course_id = c.id;
+>
+> 注意：当对多个表进行查询时，要在 SELECT 语句后面指定字段是来源于哪一张表。因此，在多表查询时，SELECT 语句后面的写法是`表名.列名`。另外，如果表名非常长的话，也可以给表设置别名，这样就可以直接在 SELECT 语句后面写上`表的别名.列名`。
+
+- 外连接
+
+> SELECT <字段名> FROM <表1> LEFT OUTER JOIN <表2> <ON子句>
+>
+> mysql> SELECT s.name,c.course_name FROM tb_students_info s LEFT OUTER JOIN tb_course c 
+>     -> ON s.'course_id'=c.'id';
+>
+> SELECT <字段名> FROM <表1> RIGHT OUTER JOIN <表2> <ON子句>
+>
+> 例：
+>
+> mysql> SELECT s.name,c.course_name FROM tb_students_info s RIGHT OUTER JOIN tb_course c 
+>     -> ON s.'course_id'=c.'id';
+>
+> 多个表左/右连接时，在 ON 子句后连续使用 LEFT/RIGHT OUTER JOIN 或 LEFT/RIGHT JOIN 即可。
+
+- 子查询
+
+> WHERE <表达式> <操作符> (子查询)
+>
+> 1）IN | NOT IN
+>
+> 2）EXISTS | NOT EXISTS
+>
+> 例：
+>
+> mysql> SELECT name FROM tb_students_info 
+>     -> WHERE course_id IN (SELECT id FROM tb_course WHERE course_name = 'Java');
+>
+> mysql> SELECT name FROM tb_students_info
+>     -> WHERE course_id = (SELECT id FROM tb_course WHERE course_name = 'Python');
+>
+> mysql> SELECT name FROM tb_students_info
+>     -> WHERE course_id <> (SELECT id FROM tb_course WHERE course_name = 'Python');
+>
+> mysql> SELECT * FROM tb_students_info
+>     -> WHERE EXISTS(SELECT course_name FROM tb_course WHERE id=1);
+>
+> mysql> SELECT * FROM tb_students_info
+>     -> WHERE age>24 AND EXISTS(SELECT course_name FROM tb_course WHERE id=1);
+>
+> 一般来说，表连接（内连接和外连接等）都可以用子查询替换，但反过来却不一定，有的子查询不能用表连接来替换。子查询比较灵活、方便、形式多样，适合作为查询的筛选条件，而表连接更适合于查看连接表的数据。
+
+...
+
+---
+
+  
